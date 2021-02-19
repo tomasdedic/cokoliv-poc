@@ -1,24 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  name: busybox
   labels:
-    app: test
-  name: test
+    app: busybox
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: test
-  strategy: {}
+          app: busybox
+  replicas: 1
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: test
+        app: busybox # This label identifies our application, used for filtering output
     spec:
+      # securityContext: # Best practice for security - if possible never run as root (which is default)
+      # runAsNonRoot: true
+      restartPolicy: Always
       containers:
-      - image: busybox
-        name: busybox
-        resources: {}
-status: {}
+        - name: busybox
+          image: k8s.gcr.io/busybox
+          # command: ["/bin/sh", "-c", "cp /standalone/configmap/* /standalone/config"]
+          command: ["/bin/sh", "-c", "--"]
+          args: ["while true; do sleep 30; done ;"]
